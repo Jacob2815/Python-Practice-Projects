@@ -1,0 +1,135 @@
+from random import randint
+
+#defining the basics of a pokemon class, including maximum health and a threshold of XP to result in a level-up. 
+class Pokemon(object):
+  level = 5
+  max_health = level * 2    
+  health = max_health       
+  fainted = False
+  xp = 0
+  xp_thresh = level * 2      
+  def __init__(self, name, element, move):
+    self.name = name
+    self.element = element
+    self.move = move
+    
+#method to allow a pokemon to receive damage    
+  def takedamage(self, amount):     
+    if self.health < amount:
+      amount = self.health
+    if amount < 1:
+      amount = 1
+    self.health -= amount
+    print('%s took %s damage!' % (self.name, amount))
+    if self.health < 0:
+      self.health = 0
+    print('%s HP remaining.' % self.health)
+    if self.health == 0:
+      self.fainted = True
+      print('%s has fainted!' % self.name)
+
+#method to heal a pokemon with a potion      
+  def potion(self):                  
+    if self.health == self.max_health:
+      print('HP is full. Potion can\'t be used right now.')
+    else:
+      self.health += 20
+      print('Potion used!')
+      if self.health > self.max_health:
+        self.health = self.max_health
+      print('%s now has %s HP.' % (self.name, self.health))
+      
+#method to unfaint a pokemon with a revive      
+  def revive(self):                   
+    if self.fainted == False:
+      print('You can\'t revive a Pokemon that hasn\'t fainted!')
+    else:
+      self.fainted = False
+      self.health = int(self.max_health / 2)
+      print('Revive used!')
+      print('%s has awoken.' % self.name)
+      print('%s HP remaining.' % self.health)
+      
+#method to attack another pokemon
+  def attack(self, opponent):         
+    print('%s uses %s!' % (self.name, self.move))
+    amount = randint(2, 4) #random number generated between 1-4
+    if (self.element == 'Fire' and opponent.element == 'Grass') or (self.element == 'Water' and opponent.element == 'Fire') or (self.element == 'Grass' and opponent.element == 'Water'):
+      opponent.takedamage(int(amount * 2))
+    if (self.element == 'Fire' and opponent.element == 'Fire') or (self.element == 'Water' and opponent.element == 'Water') or (self.element == 'Grass' and opponent.element == 'Grass') or (self.element == 'Grass' and opponent.element == 'Fire') or (self.element == 'Water' and opponent.element == 'Grass') or (self.element == 'Fire' and opponent.element == 'Water'):
+      opponent.takedamage(int(amount / 2))   
+    if opponent.fainted == True:
+      xpgain = int(opponent.level / 2)
+      self.gainxp(xpgain)
+  def gainxp(self, amount):
+    self.xp += amount
+    print('%s gained %s XP!' % (self.name, amount))
+    if self.xp == self.xp_thresh:
+      self.levelup()
+      self.xp_thresh = self.level * 2
+      self.xp = 0
+  def levelup(self):
+      self.level += 1
+      print('%s has reached level %s!' % (self.name, self.level))
+
+#defining a trainer class including a basic starting amount of potions and revives. Potions and revives can be added to the init method to differentiate item amounts, too. 
+class Trainer(object):
+  faintedpkmn = []
+  potions = 2
+  revives = 1
+  def __init__(self, name, pokemon):
+    self.name = name
+    self.lead_pokemon = pokemon[0]
+    self.pokemon = pokemon
+
+#a method to call the pokemon class potion method on the trainer's chosen pokemon
+  def usepotion(self, pokemon):
+    if pokemon.health == 0:
+      print('You can\'t use a potion on a fainted Pokemon!')
+    elif pokemon.health == pokemon.max_health:
+      pokemon.potion()
+    else:
+      pokemon.potion()
+      self.potions -= 1
+      if self.potions == 1:
+        print('%s has %s potion remaining.' % (self.name, self.revives))
+      else:
+        print('%s has %s potions remaining.' % (self.name, self.revives))
+
+#a method to revive a trainer's pokemon
+  def userevive(self, pokemon):
+    if pokemon.health > 0:
+      pokemon.revive()
+    else:
+      pokemon.revive()
+      self.revives -= 1
+      if self.revives == 1:
+        print('%s has %s revive remaining.' % (self.name, self.revives))
+      else:
+        print('%s has %s revives remaining.' % (self.name, self.revives))
+        
+#a method to attack another trainer's pokemon        
+  def attack(self, opponent):
+    print('%s attacks.' % self.name)
+    self.lead_pokemon.attack(opponent.lead_pokemon)
+    if opponent.lead_pokemon.fainted == True:
+      opponent.swap(opponent.pokemon[0])
+      
+#a method to swap pokemon      
+  def swap(self, choice):
+    print('%s removes %s from battle.' % (self.name, self.lead_pokemon.name))
+    self.lead_pokemon = self.pokemon[self.pokemon.index(choice) + 1]
+    print('%s sends in %s!' % (self.name, self.lead_pokemon.name))
+    print('%s has %s HP remaining out of %s.' % (self.lead_pokemon.name, self.lead_pokemon.health, self.lead_pokemon.max_health))
+
+#assigning a variety of pokemon to test the pokemon class
+char = Pokemon('Charmander', 'Fire', 'ember')
+squirtle = Pokemon('Squirtle', 'Water', 'water gun')
+bulba = Pokemon('Bulbasaur', 'Grass', 'vine whip')
+torchic = Pokemon('Torchic', 'Fire', 'ember')
+mudkip = Pokemon('Mudkip', 'Water', 'bubble')
+treecko = Pokemon('Treecko', 'Grass', 'leafage')
+
+#assigning a couple of trainers to test the trainer class
+red = Trainer('Red', [bulba, squirtle, char])
+jacob = Trainer('Jacob', [torchic, mudkip, treecko])
