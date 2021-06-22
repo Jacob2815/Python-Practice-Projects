@@ -1,0 +1,71 @@
+'''
+this program creates a calendar that allows the user
+to view the calendar and events, 
+as well as add, update, or delete events.
+'''
+from time import sleep, strftime
+username = 'Jacob'
+calendar = {
+
+}
+def welcome():
+  print('Hello, ' + username + '. Welcome to your calendar.')
+  print('Initializing...')
+  sleep(1)
+  print('Today\'s is: ' + strftime('%A, %B %d, %Y'))
+  print('The time is: ' + strftime('%I:%M:%S %p'))
+  sleep(1)
+  print('What would you like to do?')
+
+def start_calendar():
+  welcome()
+  start = True
+  while start is True:
+    user_choice = raw_input('Select A to add, U to update, V to view, D to delete, X to exit: ')
+    if user_choice.lower() == 'v':
+      if len(calendar.keys()) < 1:
+        print('The calendar is empty.')
+      else:
+        print(calendar)
+    elif user_choice.lower() == 'u':
+      date = raw_input('Enter date (MM/DD/YYYY): ')
+      update = raw_input('Enter event update: ')
+      calendar[date] = update
+      sleep(1)
+      print('Calendar updated.')
+      print(calendar)
+    elif user_choice.lower() == 'a':
+      event = raw_input('Enter event: ')
+      date = raw_input('Enter date (MM/DD/YYYY): ')
+      if (len(date) > 10) or (int(date[6:]) < int(strftime('%Y'))) or (int(date[:2]) > 12) or (int(date[3:5]) > 31):
+        print("Invalid date.")
+        try_again = raw_input('Try again? Y for Yes, N for No: ')
+        try_again == try_again.upper()
+        if try_again == 'Y':
+          continue
+        else:
+          start = False
+      else:
+        calendar[date] = event
+        print('Event added.')
+        print(calendar)
+    elif user_choice.lower() == 'd':
+      if len(calendar.keys()) < 1:
+        print('There\'s nothing to delete.')
+      else:
+        event = raw_input('What event? ')
+        for date in calendar.keys():
+          if event == calendar[date]:
+            del calendar[date]
+            print('Event deleted.')
+            print(calendar)
+          else:
+            print('No matching event found.')
+    elif user_choice.lower() == 'x':
+      print('Calendar is closing.')
+      start = False
+    else:
+      print('Invalid input. Closing calendar.')
+      start = False
+
+start_calendar()
