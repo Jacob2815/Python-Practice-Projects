@@ -1,0 +1,32 @@
+import random
+print("Rock, paper, scissors, go!")
+print()
+
+#receives user's choice to start game
+decision = str(input())
+decision = decision.lower()
+print()
+
+#repeats user's choice for formatting
+print("You chose: " + decision)
+print()
+
+#creates a list of possible options, 
+#randomly chooses one, 
+#and prints the opponents response
+opponent = ['rock', 'paper', 'scissors']
+opponent = random.choice(opponent)
+print("Opponent chooses: " + opponent + "!")
+print()
+
+#determines the winner based on the user's input and opponent's choice
+if decision == opponent:
+  print("Draw!")
+elif decision == 'rock' and opponent == 'scissors':
+  print("You win!")
+elif decision == 'scissors' and opponent == 'paper':
+  print("You win!")
+elif decision == 'paper' and opponent == 'rock':
+  print("You win!")
+else:
+  print("You lose!")
