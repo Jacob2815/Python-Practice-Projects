@@ -1,0 +1,86 @@
+'''
+This project is a solo game of Hang-man.
+A word will be selected from a pre-defined list of words,
+and the user will get 6 incorrect guesses to correctly guess the letters
+and spell out the word.
+It will require functions to:
+  Randomly select a word from the list
+  Present the length of the chosen word
+  Accept input for guesses and check the guess against the word
+  Replace the correct guesses in the word
+  And increment the guesses counter 
+Potential future update: allow the user to select a difficulty
+               and specify word length.
+'''
+import random
+
+def length_output(word):
+  target_length = []
+  for letter in word:
+    target_length.append('_')
+  return target_length
+
+def listmaker(string):
+  correct_list = []
+  for letter in string:
+    correct_list.append(letter)
+  return correct_list
+    
+def guess():
+  userguess = str(input('Enter your guess: '))
+  return userguess
+  
+def play_game():
+  incorrectcount = 0
+  incorrectguesses = []
+  print('Welcome to Hang-Man.')
+  print('Your target words is %s letters long:' % len(target))
+  print(' '.join(target_blanks))
+  print()
+  print('You have 6 guesses.')
+  while incorrectcount < 6:
+    print('-----------')
+    userguess = guess()
+    if userguess in target:
+      print()
+      print('Correct guess!')
+      print()
+      for i in range(len(target)):
+        if userguess == target[i-1]:
+          target_blanks[i-1] = userguess
+      print(' '.join(target_blanks))     
+      print()
+      if target_blanks == listmaker(target):
+        print('You win!')
+        incorrectcount = 6
+    elif userguess in incorrectguesses:
+      print()
+      print('You already guessed that!')
+      print()
+    elif userguess in alphabet:
+      incorrectguesses.append(str(userguess))
+      print()
+      print('Incorrect guess!')
+      incorrectcount += 1
+      if incorrectcount == 5:
+        print()
+        print('%s guess remaining' % str(6 - incorrectcount))
+        print()
+      else:
+        print()
+        print('%s guesses remaining' % str(6 - incorrectcount))
+        print()
+      print('Guesses so far: ')
+      print(' '.join(incorrectguesses))
+      print()
+    else:
+      print('Invalid guess.')
+  if incorrectcount == 6:
+    print('Game over!')
+
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
+words = ['test', 'testing', 'tester']
+target = random.choice(words)
+target_blanks = length_output(target)
+
+play_game()
